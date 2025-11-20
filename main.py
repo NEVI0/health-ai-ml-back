@@ -7,8 +7,8 @@ import joblib
 app = Flask(__name__)
 CORS(app)
 
-rf_model = joblib.load('random_florest_model.sav')
-lr_model = joblib.load('logistic_regression_model.sav')
+rf_model = joblib.load('/models/random_florest_model.sav')
+lr_model = joblib.load('/models/logistic_regression_model.sav')
 
 @app.route('/predict', methods=['POST'])
 def predict():
