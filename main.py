@@ -7,6 +7,7 @@ import joblib
 app = Flask(__name__)
 CORS(app)
 
+scaler = joblib.load('models/scaler.sav')
 rf_model = joblib.load('models/random_florest_model.sav')
 lr_model = joblib.load('models/logistic_regression_model.sav')
 
@@ -21,17 +22,18 @@ def predict():
             model = lr_model
 
         features = np.array([
-            data['Age'],
-            data['BMI'],
             data['HighBP'],
-            data['Sex'],
             data['HighChol'],
+            data['BMI'],
             data['Smoker'],
-            data['PhysActivity']
+            data['PhysActivity'],
+            data['Sex'],
+            data['Age']
         ]).reshape(1, -1)
 
-        prediction = model.predict(features)[0]
-        probability = model.predict_proba(features)[0][1]
+        features_scaled = scaler.transform(features)
+        prediction = model.predict(features_scaled)[0]
+        probability = model.predict_proba(features_scaled)[0][1]
 
         return jsonify({
             'diabetic': int(prediction),
